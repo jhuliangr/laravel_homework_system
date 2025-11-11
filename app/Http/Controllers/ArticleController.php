@@ -10,4 +10,7 @@ class ArticleController extends Controller
         return view('article.index');
     }
 
+    function show($article){
+        return view('article.show', compact(var_name: 'article'));
+    }
 }
