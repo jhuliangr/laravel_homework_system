@@ -4,8 +4,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [\App\Http\Controllers\WelcomeController::class, 'index']);
 
-Route::get('/articles', [\App\Http\Controllers\ArticleController::class, 'index']) -> name('article.index');
-Route::get('/articles/{article}', [\App\Http\Controllers\ArticleController::class, 'show']) -> name('article.show');
+Route::get('/homework', [\App\Http\Controllers\HomeworkController::class, 'index']) -> name('homework.index');
+Route::get('/homework/{id}', [\App\Http\Controllers\HomeworkController::class, 'show']) -> name('homework.show');
 
 Route::get('/dashboard', function () {
     return view('userzone.dashboard');
