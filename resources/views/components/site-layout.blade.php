@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Homeworks</title>
+    <title>{{$title}}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <header class="bg-teal-300 p-5 flex items-center justify-between fixed w-full z-10">
