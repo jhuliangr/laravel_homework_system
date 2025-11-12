@@ -17,7 +17,8 @@ class HomeworkFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'title' =>fake() -> sentence(8),
+            'body' => fake() -> sentence(15), 
         ];
     }
 }
