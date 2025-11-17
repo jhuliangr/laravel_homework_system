@@ -7,8 +7,13 @@ Route::get('/', [\App\Http\Controllers\WelcomeController::class, 'index']);
 Route::get('/homework', [\App\Http\Controllers\HomeworkController::class, 'index']) -> name('homework.index');
 Route::get('/homework/{id}', [\App\Http\Controllers\HomeworkController::class, 'show']) -> name('homework.show');
 
+Route::resource('course', \App\Http\Controllers\CourseController::class);
+
+
 Route::get('/dashboard', function () {
-    return view('userzone.dashboard');
+    $user = Auth::user();
+    $teacher = $user->teacher;
+    return view('userzone.dashboard', compact('teacher'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
