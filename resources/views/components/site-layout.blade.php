@@ -8,7 +8,7 @@
 
 <body class="flex flex-col min-h-screen">
     <header class="bg-teal-300 p-5 flex items-center justify-between fixed w-full z-10">
-        <a href="/">
+        <a href="{{ Auth::check() ?'/dashboard':'/' }}">
             <p class="text-xl select-none">
                 Homework
             </p>
