@@ -2,10 +2,18 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex">
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                <div class="hidden space-x-2 sm:-my-px sm:ms-10 sm:flex">
                     <x-breeze.nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         Dashboard
                     </x-breeze.nav-link>
+                    <x-breeze.nav-link :href="route('courses.my_courses')" :active="request()->routeIs('courses.my_courses')">
+                        My courses
+                    </x-breeze.nav-link>
+                    @if ($is_teacher)
+                        <x-breeze.nav-link :href="route('course.index')" :active="request()->routeIs('course.index')">
+                            Courses I Teach
+                        </x-breeze.nav-link>
+                    @endif
                 </div>
             </div>
         </div>
@@ -17,7 +25,16 @@
             <x-breeze.responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 Dashboard
             </x-breeze.responsive-nav-link>
+            <x-breeze.nav-link :href="route('courses.my_courses')" :active="request()->routeIs('my_courses')">
+                My courses
+            </x-breeze.nav-link>
+            @if ($is_teacher)
+                <x-breeze.nav-link :href="route('course.index')" :active="request()->routeIs('my_courses')">
+                    Courses I Teach
+                </x-breeze.nav-link>
+            @endif
         </div>
+
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
