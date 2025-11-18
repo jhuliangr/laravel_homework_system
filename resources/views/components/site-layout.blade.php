@@ -6,11 +6,11 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="flex flex-col min-h-screen">
-    <header class="bg-teal-300 p-5 flex items-center justify-between fixed w-full z-10">
-        <a href="{{ Auth::check() ?'/dashboard':'/' }}">
+<body class="flex flex-col min-h-screen bg-teal-50">
+    <header class="bg-teal-300 p-5 flex items-center justify-between fixed w-[95vw] z-10 shadow-lg rounded-full mt-2 mx-[2.5vw]">
+        <a href="{{ Auth::check() ? '/dashboard' : '/' }}">
             <p class="text-xl select-none">
-                Homework
+                <x-breeze.application-logo class="size-10 text-gray-500" />
             </p>
         </a>
 
@@ -28,7 +28,8 @@
                             <a href="{{ url('/profile') }}" class="block px-4 py-2 hover:bg-teal-100 w-full">
                                 Profile
                             </a>
-                            <form method="POST" action="{{ route('logout') }}" class="block px-4 py-2 hover:bg-teal-100 w-full">
+                            <form method="POST" action="{{ route('logout') }}"
+                                class="block px-4 py-2 hover:bg-teal-100 w-full">
                                 @csrf
                                 <button :href="route('logout')"
                                     onclick="event.preventDefault();
@@ -55,11 +56,10 @@
 
     <div id="overlay" class="fixed inset-0 z-0 hidden"></div>
 
-    <div class="max-w-screen px-10 bg-teal-50 py-20 flex-1 mt-16">
+    <div class="max-w-screen px-10 py-20 flex-1 pt-28">
         {{ $slot }}
     </div>
-
-    <footer class="bg-teal-200 w-full p-3">
+    <footer class="bg-teal-200 w-full p-3 rounded-t-full">
         Homework @ All rights reserved
     </footer>
 
