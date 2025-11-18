@@ -9,14 +9,10 @@ use Illuminate\Support\Facades\Auth;
 
 class CourseController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $user = Auth::user();
-        if ($user->isTeacher()) {
-            $courses = $user->teacher->courses;
-        } else {
-            $courses = Course::all();
-        }
+        $user = auth()->user();
+        $courses = $request->is_teacher ? $request->user()->teacher->courses : Course::all();
 
         return view('course.index', compact('courses', 'user'));
     }
@@ -83,7 +79,7 @@ class CourseController extends Controller
     // Extra functions
     public function user_courses()
     {
-        $user = Auth::user();
+        $user = auth()->user();
         $courses = $user->courses;
         $show = false;
 
@@ -92,7 +88,7 @@ class CourseController extends Controller
 
     public function pick()
     {
-        $user = Auth::user();
+        $user = auth()->user();
 
         $excluded_course_ids = $user->courses->pluck('id');
 
