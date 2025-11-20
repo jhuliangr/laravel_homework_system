@@ -20,8 +20,26 @@ class CourseFactory extends Factory
         return [
             'teacher_id' => Teacher::factory(),
             'module_name' => $this->faker->randomElement([
-                'Math',
-                'Design',
+                "Mathematics",
+                "Language and Literature",
+                "History",
+                "Geography",
+                "Biology",
+                "Physics",
+                "Chemistry",
+                "English",
+                "Physical Education",
+                "Philosophy",
+                "Economics",
+                "Art",
+                "Music",
+                "Technology",
+                "Computer Science",
+                "Psychology",
+                "Technical Drawing",
+                "French",
+                "Social Sciences",
+                "Statistics"
             ]),
             'start_date' => $this->faker->dateTimeBetween('-1 year', '+6 months'),
         ];
