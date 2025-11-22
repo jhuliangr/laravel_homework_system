@@ -38,6 +38,14 @@ class HomeWorkController extends Controller
             $highestScore = $homework->evaluations->max('value');
         }
         $isTeacher = $request->is_teacher;
+        if ($isTeacher) {
+            $studentIsTeacher = $homework->student->userData->teacher;
+            if ($studentIsTeacher) {
+                $teacherIdFromAuth = auth()->user()->teacher->id;
+                $isTeacher = $studentIsTeacher->id != $teacherIdFromAuth;
+            }
+        }
+
         return view('homework.show', compact('homework', 'highestScore', 'isTeacher'));
     }
 
