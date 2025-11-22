@@ -11,8 +11,7 @@ class CourseController extends Controller
     public function index(Request $request)
     {
         $user = auth()->user();
-        $courses = $request->is_teacher ? $request->user()->teacher->courses : Course::all();
-
+        $courses = $request->is_teacher ? $request->user()->teacher->courses() : Course::all();
         return view('course.index', compact('courses', 'user'));
     }
 
@@ -95,7 +94,7 @@ class CourseController extends Controller
             $excluded_course_ids = $excluded_course_ids->merge($user->teacher->courses->pluck('id'))->unique();
         }
 
-        $courses = Course::whereNotIn('id', $excluded_course_ids)->get();
+        $courses = Course::whereNotIn('id', $excluded_course_ids)->paginate(5);
 
         return view('course.pick', compact('courses'));
     }

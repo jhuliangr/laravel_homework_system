@@ -22,5 +22,7 @@
                 <x-course-row :course="$course" />
             @endforeach
         </div>
+        
+    {{ $courses->links() }}
     @endif
 </x-site-layout>
