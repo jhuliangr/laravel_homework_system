@@ -26,6 +26,8 @@ Route::middleware(['auth', 'is_teacher'])->group(function () {
     Route::post('/homework/evaluate/{id}', [\App\Http\Controllers\HomeworkController::class, 'evaluate'])->name('homework.evaluate');
     Route::post('/homework/reevaluate/{id}', [\App\Http\Controllers\HomeworkController::class, 'reEvaluate'])->name('homework.reEvaluate');
 
+    Route::get('/enrolled_students/{courseId}', [\App\Http\Controllers\StudentController::class, 'index'])->name('student.enrolled');
+    Route::get('/enrolled_student/{courseId}/{id}', [\App\Http\Controllers\StudentController::class, 'show'])->name('student.show');
 });
 
 require __DIR__ . '/auth.php';
