@@ -16,7 +16,6 @@ return new class extends Migration
 
             $table->integer('value');
             $table->foreignId('homework_id')
-                  ->unique()
                   ->constrained()
                   ->onDelete('cascade');
             $table->foreignId('teacher_id')->unique()->constrained()->onDelete('cascade');
