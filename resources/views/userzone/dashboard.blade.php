@@ -18,6 +18,13 @@
                         Enroll courses
                     </x-breeze.primary-button>
                 </a>
+                @if ($teacher)
+                    <a href="{{ route('homework.search') }}">
+                        <x-breeze.primary-button>
+                            Search homeworks
+                        </x-breeze.primary-button>
+                    </a>
+                @endif
             </div>
         </div>
     </x-app-layout>
