@@ -21,11 +21,11 @@ class HomeWorkController extends Controller
                 $query->select('id')
                     ->from('course_students')
                     ->where('course_id', $courseId);
-            })->get();
+            })->with('student', 'evaluations')->paginate(5);
             $withStudentName = true;
             return view('homework.index', compact('homeworks', 'courseId', 'withStudentName'));
         }
-        $homeworks = Homework::where('course_student_id', $courseStudent->id)->get();
+        $homeworks = Homework::where('course_student_id', $courseStudent->id)->with('student', 'evaluations')->paginate(5);
 
         return view('homework.index', compact('homeworks', 'courseId'));
     }

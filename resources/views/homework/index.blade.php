@@ -13,5 +13,6 @@
                 <x-homework-row :hw="$hw" />
             @endif
         @endforeach
+        {{ $homeworks->links() }}
     @endif
 </x-site-layout>
