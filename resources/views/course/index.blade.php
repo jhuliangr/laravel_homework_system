@@ -3,11 +3,8 @@
 
         <div class="w-full flex items-center justify-between p-3">
             @include('components.back-button')
-
-            @if ($user->teacher && $courses->pluck('teacher_id')->contains($user->teacher->id))
-                @if ($user->teacher)
-                    @include('components.course-form')
-                @endif
+            @if ($user->teacher)
+                @include('components.course-form')
             @endif
         </div>
         @if ($courses->isEmpty())
