@@ -12,7 +12,7 @@
                 <h3 class="px-3 py-2">No courses found</h3>
             </div>
         @else
-            <div class="flex flex-col p-3 bg-gray-100 mt-5 max-h-[50vh] overflow-y-auto rounded-xl">
+            <div class="flex flex-col p-3 bg-gray-100 mt-5 overflow-y-auto rounded-xl">
                 <div class="font-bold grid grid-cols-2 bg-teal-300 my-1 px-5 py-1 rounded-xl cursor-pointer">
                     <div>
                         Course name
@@ -24,6 +24,7 @@
                 @foreach ($courses as $course)
                     <x-course-row :course="$course" />
                 @endforeach
+                {{ $courses->links() }}
             </div>
         @endif
     </x-app-layout>

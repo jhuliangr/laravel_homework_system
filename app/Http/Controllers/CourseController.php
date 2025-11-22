@@ -78,7 +78,7 @@ class CourseController extends Controller
     public function user_courses()
     {
         $user = auth()->user();
-        $courses = $user->courses;
+        $courses = $user->courses()->paginate(5);
         $show = false;
 
         return view('course.index', compact('courses', 'user'));
