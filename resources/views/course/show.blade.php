@@ -25,11 +25,19 @@
                         </button>
                     </form>
                 @else
-                <a href="/enrolled_students/{{ $course->id }}">
-                    <x-breeze.primary-button>
-                        Review homeworks
-                    </x-breeze.primary-button>
-                </a>
+                    <div class="flex gap-5">
+
+                        <a href="{{ route('student.enrolled', $course->id) }}">
+                            <x-breeze.primary-button>
+                                View enrolled students
+                            </x-breeze.primary-button>
+                        </a>
+                        <a href="{{ route('homework.index', $course->id) }}">
+                            <x-breeze.primary-button>
+                                View submitted homeworks
+                            </x-breeze.primary-button>
+                        </a>
+                    </div>
                 @endif
             @endif
         @else
