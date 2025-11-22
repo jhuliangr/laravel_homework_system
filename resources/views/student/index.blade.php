@@ -19,6 +19,7 @@
             @foreach ($courseStudents as $student)
                 <x-student-row :student="$student" :courseId="$courseId" />
             @endforeach
+            {{ $courseStudents->links() }}
     @endif
     </div>
 </x-site-layout>

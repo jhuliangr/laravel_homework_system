@@ -15,7 +15,7 @@ class StudentController extends Controller
      */
     public function index(string $courseId)
     {
-        $courseStudents = Course::where("id", $courseId)->first()->students;
+        $courseStudents = Course::where("id", $courseId)->first()->students()->paginate(5);
         return view("student.index", compact("courseStudents", "courseId"));
     }
 
