@@ -16,13 +16,21 @@
     <div class="w-full h-52 flex items-center justify-center">
         @if ($edit)
             @if ($user->teacher)
-                <form action="{{ route('course.destroy', $course->id) }}" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="bg-red-500 py-2 px-10 rounded-xl text-white">
-                        Delete
-                    </button>
-                </form>
+                @if ($course->students->isEmpty())
+                    <form action="{{ route('course.destroy', $course->id) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="bg-red-500 py-2 px-10 rounded-xl text-white">
+                            Delete
+                        </button>
+                    </form>
+                @else
+                <a href="/enrolled_students/{{ $course->id }}">
+                    <x-breeze.primary-button>
+                        Review homeworks
+                    </x-breeze.primary-button>
+                </a>
+                @endif
             @endif
         @else
             @if (!$user->courses->pluck('id')->contains($course->id))
@@ -33,7 +41,15 @@
                     </button>
                 </form>
             @else
-                subir tarea :D
+                <div class="flex items-center justify-center gap-5">
+                    <a href="{{ route('homework.index', $course->id) }}">
+                        <x-breeze.primary-button
+                            class="text-gray-950 bg-teal-300 py-3 px-5 rounded-xl hover:bg-teal-400 transition-colors duration-300 shadow-md hover:shadow-sm">
+                            Show uploaded homeworks
+                        </x-breeze.primary-button>
+                    </a>
+                    @include('components.homework-form', ['id' => $course->id])
+                </div>
             @endif
         @endif
     </div>
