@@ -1,11 +1,11 @@
 <x-site-layout>
+    <div class="flex items-center justify-between mb-5">
+        <x-back-button />
+        @include('components.homework-form', ['id' => $courseId])
+    </div>
     @if ($homeworks->isEmpty())
-        <h3>No homeworks found</h3>
+        <h3 class="text-xl font-medium text-center">No homeworks found</h3>
     @else
-        <div class="flex items-center justify-between mb-5">
-            <x-back-button />
-            @include('components.homework-form', ['id' => $courseId])
-        </div>
         @foreach ($homeworks as $hw)
             @if (isset($withStudentName))
                 <x-homework-row :hw="$hw" withStudentName="{{ $withStudentName }}" />
