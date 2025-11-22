@@ -78,4 +78,37 @@ class HomeWorkController extends Controller
 
         return redirect(route('homework.show', $id));
     }
+
+
+    public function search(Request $request)
+    {
+        $search = $request->input('search');
+
+        $homeworks = Homework::with(
+            'student',
+            'course'
+        )
+            ->when($search, function ($query, $search) {
+                return $query->where(function ($q) use ($search) {
+                    // Search by homework title
+                    $q->where('title', 'LIKE', "%{$search}%")
+                        // Search by user name
+                        ->orWhereHas('student', function ($userQuery) use ($search) {
+                        $userQuery->where('name', 'LIKE', "%{$search}%");
+                    })
+                        // Search by user email
+                        ->orWhereHas('student', function ($userQuery) use ($search) {
+                        $userQuery->where('email', 'LIKE', "%{$search}%");
+                    })
+                        // Search by course name
+                        ->orWhereHas('course', function ($courseQuery) use ($search) {
+                        $courseQuery->where('module_name', 'LIKE', "%{$search}%");
+                    });
+                });
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(5);
+
+        return view('homework.search', compact('homeworks', 'search'));
+    }
 }
