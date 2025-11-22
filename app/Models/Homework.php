@@ -22,7 +22,7 @@ class Homework extends Model
     }
     public function course()
     {
-        return $this->belongsTo(Course::class);
+        return $this->belongsTo(Course::class, 'course_student_id');
     }
     public function student()
     {
