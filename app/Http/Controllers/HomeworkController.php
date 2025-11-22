@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CourseStudent;
 use App\Models\Evaluation;
 use App\Models\Homework;
+use App\Notifications\HomeworkQualifiedNotification;
 use Illuminate\Http\Request;
 
 class HomeWorkController extends Controller
@@ -69,20 +70,27 @@ class HomeWorkController extends Controller
     }
     public function evaluate(Request $request, string $id)
     {
-        Evaluation::create([
+        $evaluation = Evaluation::create([
             'homework_id' => $id,
             'value' => $request->evaluation,
             'teacher_id' => auth()->user()->teacher->id
         ]);
+
+        $homework = $evaluation->homework;
+        $homework->student->userData->notify(new HomeworkQualifiedNotification($homework));
+
         return redirect(route('homework.show', $id));
     }
     public function reEvaluate(Request $request, string $id)
     {
-        $evaluation = Evaluation::where('homework_id', $id);
+        $evaluation = Evaluation::where('homework_id', $id)->first();
         $evaluation->update([
             'value' => $request->evaluation,
             'teacher_id' => auth()->user()->teacher->id
         ]);
+
+        $homework = $evaluation->homework;
+        $homework->student->userData->notify(new HomeworkQualifiedNotification($homework));
 
         return redirect(route('homework.show', $id));
     }
