@@ -13,6 +13,7 @@ class HomeWorkController extends Controller
     public function index(Request $request, string $courseId)
     {
         $user = auth()->user();
+
         $courseStudent = CourseStudent::where('user_id', $user->id)
             ->where('course_id', $courseId)
             ->first();
@@ -24,6 +25,7 @@ class HomeWorkController extends Controller
                     ->where('course_id', $courseId);
             })->with('student', 'evaluations')->paginate(5);
             $withStudentName = true;
+
             return view('homework.index', compact('homeworks', 'courseId', 'withStudentName'));
         }
         $homeworks = Homework::where('course_student_id', $courseStudent->id)->with('student', 'evaluations')->paginate(5);
@@ -39,12 +41,10 @@ class HomeWorkController extends Controller
             $highestScore = $homework->evaluations->max('value');
         }
         $isTeacher = $request->is_teacher;
-        if ($isTeacher) {
-            $studentIsTeacher = $homework->student->userData->teacher;
-            if ($studentIsTeacher) {
-                $teacherIdFromAuth = auth()->user()->teacher->id;
-                $isTeacher = $studentIsTeacher->id != $teacherIdFromAuth;
-            }
+        $studentIsTeacher = $homework->student->userData->teacher;
+        if ($isTeacher && $studentIsTeacher) {
+            $teacherIdFromAuth = auth()->user()->teacher->id;
+            $isTeacher = $studentIsTeacher->id != $teacherIdFromAuth;
         }
 
         return view('homework.show', compact('homework', 'highestScore', 'isTeacher'));
@@ -57,14 +57,17 @@ class HomeWorkController extends Controller
             'title' => ['required', 'string', 'min:5', 'max:255'],
             'body' => ['required', 'string', 'min:5', 'max:3000'],
         ]);
-
         $courseStudentId = $user->courseStudent()->where('course_id', $id)->first()->id;
+        if (!$courseStudentId) {
+            abort(404);
+        }
 
         Homework::create([
             'title' => $validated['title'],
             'body' => $validated['body'],
             'course_student_id' => $courseStudentId
         ]);
+        $this->clearHomeworkSearchCache();
 
         return redirect(route('homework.index', $id));
     }
@@ -100,31 +103,48 @@ class HomeWorkController extends Controller
     {
         $search = $request->input('search');
 
-        $homeworks = Homework::with(
-            'student',
-            'course'
-        )
-            ->when($search, function ($query, $search) {
-                return $query->where(function ($q) use ($search) {
-                    // Search by homework title
-                    $q->where('title', 'LIKE', "%{$search}%")
-                        // Search by user name
-                        ->orWhereHas('student', function ($userQuery) use ($search) {
-                        $userQuery->where('name', 'LIKE', "%{$search}%");
-                    })
-                        // Search by user email
-                        ->orWhereHas('student', function ($userQuery) use ($search) {
-                        $userQuery->where('email', 'LIKE', "%{$search}%");
-                    })
-                        // Search by course name
-                        ->orWhereHas('course', function ($courseQuery) use ($search) {
-                        $courseQuery->where('module_name', 'LIKE', "%{$search}%");
+        $page = $request->get('page', 1);
+        $cacheKey = 'homework_search_' . md5($search . '_' . $page);
+
+        $keys = cache()->get('homework_search_keys', []);
+        $keys[] = $cacheKey;
+        cache()->put('homework_search_keys', $keys);
+
+        $homeworks = cache()->remember($cacheKey, now()->addHour(), function () use ($search) {
+            return Homework::with('student', 'course')
+                ->when($search, function ($query, $search) {
+                    return $query->where(function ($q) use ($search) {
+                        // Search by homework title
+                        $q->where('title', 'LIKE', "%{$search}%")
+                            // Search by user name
+                            ->orWhereHas('student', function ($userQuery) use ($search) {
+                            $userQuery->where('name', 'LIKE', "%{$search}%");
+                        })
+                            // Search by user email
+                            ->orWhereHas('student', function ($userQuery) use ($search) {
+                            $userQuery->where('email', 'LIKE', "%{$search}%");
+                        })
+                            // Search by course name
+                            ->orWhereHas('course', function ($courseQuery) use ($search) {
+                            $courseQuery->where('module_name', 'LIKE', "%{$search}%");
+                        });
                     });
-                });
-            })
-            ->orderBy('created_at', 'desc')
-            ->paginate(5);
+                })
+                ->orderBy('created_at', 'desc')
+                ->paginate(5);
+        });
 
         return view('homework.search', compact('homeworks', 'search'));
+    }
+
+    private function clearHomeworkSearchCache()
+    {
+        $keys = cache()->get('homework_search_keys', []);
+
+        foreach ($keys as $key) {
+            cache()->forget($key);
+        }
+
+        cache()->forget('homework_search_keys');
     }
 }
