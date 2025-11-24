@@ -14,10 +14,13 @@ class HomeWorkController extends Controller
     {
         $user = auth()->user();
 
+        // Get student data for authenticated user from the many to many relation with course
         $courseStudent = CourseStudent::where('user_id', $user->id)
             ->where('course_id', $courseId)
             ->first();
 
+        // Checks $courseStudent and, if it's the authenticated user is not a course student it looks for the homeworks attached 
+        // to a course and makes the view to show the student name
         if (!$courseStudent) {
             $homeworks = Homework::whereIn('course_student_id', function ($query) use ($courseId) {
                 $query->select('id')
@@ -41,6 +44,7 @@ class HomeWorkController extends Controller
             $highestScore = $homework->evaluations->max('value');
         }
         $isTeacher = $request->is_teacher;
+        // If the student is a teacher and is the one who uploaded the actual homework, will not have evaluation permission 
         $studentIsTeacher = $homework->student->userData->teacher;
         if ($isTeacher && $studentIsTeacher) {
             $teacherIdFromAuth = auth()->user()->teacher->id;
@@ -57,6 +61,7 @@ class HomeWorkController extends Controller
             'title' => ['required', 'string', 'min:5', 'max:255'],
             'body' => ['required', 'string', 'min:5', 'max:3000'],
         ]);
+        // Get the id of the course the task is uploaded for, if it doesn't exists throw 404 error
         $courseStudentId = $user->courseStudent()->where('course_id', $id)->first()->id;
         if (!$courseStudentId) {
             abort(404);
@@ -80,6 +85,7 @@ class HomeWorkController extends Controller
         ]);
 
         $homework = $evaluation->homework;
+        // Send an email to the student who uploaded the homework
         $homework->student->userData->notify(new HomeworkQualifiedNotification($homework));
 
         return redirect(route('homework.show', $id));
@@ -93,6 +99,7 @@ class HomeWorkController extends Controller
         ]);
 
         $homework = $evaluation->homework;
+        // Send an email to the student who uploaded the homework
         $homework->student->userData->notify(new HomeworkQualifiedNotification($homework));
 
         return redirect(route('homework.show', $id));
@@ -103,13 +110,16 @@ class HomeWorkController extends Controller
     {
         $search = $request->input('search');
 
+        // Create unique key for the page and search input value
         $page = $request->get('page', 1);
         $cacheKey = 'homework_search_' . md5($search . '_' . $page);
 
+        // Save the unique key under the array homework_search_keys for being able to delete them when a new homework is uploaded
         $keys = cache()->get('homework_search_keys', []);
         $keys[] = $cacheKey;
         cache()->put('homework_search_keys', $keys);
 
+        // Get the homeworks from cache or make the query for retrieving the homeworks from database
         $homeworks = cache()->remember($cacheKey, now()->addHour(), function () use ($search) {
             return Homework::with('student', 'course')
                 ->when($search, function ($query, $search) {
