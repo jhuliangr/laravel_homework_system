@@ -11,8 +11,13 @@ class BlockIpRateLimit
 {
     public function handle(Request $request, Closure $next, $profile = 'default'): Response
     {
+        $key = match($profile) {
+            'strict' => 'rate_limit.strict',
+            default => 'rate_limit.default',
+        };
+
         $ip = $request->ip();
-        $config = config("rate_limit.{$profile}", config('rate_limit.default'));
+        $config = config($key, config('rate_limit.default'));
 
         // Verificar whitelist
         if (in_array($ip, $config['whitelist'] ?? [])) {
