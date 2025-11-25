@@ -38,17 +38,18 @@ class StudentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(?string $courseId, string $id)
+    public function show(string $courseId, string $id)
     {
-        $student = User::where("id", $id)->first();
-        if ($courseId) {
-            $courseStudentId = CourseStudent::where("course_id", $courseId)->where("user_id", $id)->first()->id;
-            $homeworksUploadedInCourse = Homework::where("course_student_id", $courseStudentId)->with('evaluations')
-                ->get();
-            return view("student.show", compact("student", "homeworksUploadedInCourse"));
-        } else {
+        $student = User::find($id);
 
+        $courseStudentId = CourseStudent::where("course_id", $courseId)->where("user_id", $id)->first()->id;
+        if (!$courseStudentId) {
+            abort(404);
         }
+        $homeworksUploadedInCourse = Homework::where("course_student_id", $courseStudentId)->with('evaluations')
+            ->paginate(5);
+
+        return view("student.show", compact("student", "homeworksUploadedInCourse"));
     }
 
     /**

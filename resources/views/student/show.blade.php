@@ -30,6 +30,7 @@
                 @foreach ($homeworksUploadedInCourse as $hw)
                     <x-homework-row :hw="$hw" />
                 @endforeach
+                {{ $homeworksUploadedInCourse->links() }}
             </div>
         @endif
     @endif
