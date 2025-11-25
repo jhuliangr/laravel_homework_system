@@ -2,7 +2,7 @@
     <x-app-layout>
 
         <div class="w-full flex items-center justify-between p-3">
-            @include('components.back-button')
+            @include('components.back-button', ['route' => 'dashboard'])
             @if ($user->teacher)
                 @include('components.course-form')
             @endif

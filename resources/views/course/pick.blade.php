@@ -1,6 +1,6 @@
 <x-site-layout>
     <div class="bg-gray-200 w-full flex items-center justify-between rounded-xl p-3">
-        @include('components.back-button')
+        @include('components.back-button', ['route' => 'dashboard'])
         <h2 class="font-bold px-5 text-xl">Select the courses you want to enroll in</h2>
         <div></div>
     </div>
@@ -22,7 +22,7 @@
                 <x-course-row :course="$course" />
             @endforeach
         </div>
-        
-    {{ $courses->links() }}
+
+        {{ $courses->links() }}
     @endif
 </x-site-layout>

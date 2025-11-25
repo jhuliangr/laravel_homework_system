@@ -49,7 +49,7 @@ class StudentController extends Controller
         $homeworksUploadedInCourse = Homework::where("course_student_id", $courseStudentId)->with('evaluations')
             ->paginate(5);
 
-        return view("student.show", compact("student", "homeworksUploadedInCourse"));
+        return view("student.show", compact("student", "homeworksUploadedInCourse", "courseId"));
     }
 
     /**

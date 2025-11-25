@@ -1,6 +1,6 @@
 <x-site-layout>
     <div class="px-5 mb-5">
-        <x-back-button />
+        @include('components.back-button', ['route' => 'student.enrolled', 'param1' => $courseId])
     </div>
     <div class="bg-gray-300 p-5 rounded-xl flex flex-col gap-3 w-full max-w-md mx-auto">
         <div class="flex gap-2 items-center justify-center">Student: <p class="font-bold">

@@ -11,7 +11,7 @@ class BlockIpRateLimit
 {
     public function handle(Request $request, Closure $next, $profile = 'default'): Response
     {
-        $key = match($profile) {
+        $key = match ($profile) {
             'strict' => 'rate_limit.strict',
             default => 'rate_limit.default',
         };
@@ -56,7 +56,7 @@ class BlockIpRateLimit
             \Log::warning("IP bloqueada por rate limit: {$ip}");
 
             return response()->json([
-                'error' => 'Demasiadas solicitudes. IP bloqueada temporalmente.',
+                'error' => 'Too much requests, ip blocked temporarly',
                 'retry_after' => $blockMinutes * 60
             ], 429);
         }
