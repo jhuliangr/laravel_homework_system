@@ -13,7 +13,7 @@ class CourseController extends Controller
     {
         $user = auth()->user();
         // if the middleware says it's a teacher bring the courses this teacher imparts, otherwise bring all the courses
-        $courses = $request->is_teacher ? $request->user()->teacher->courses()->select('')->paginate(5) : Course::paginate(5);
+        $courses = $request->is_teacher ? $request->user()->teacher->courses()->paginate(5) : Course::paginate(5);
 
         return view('course.index', compact('courses', 'user'));
     }
