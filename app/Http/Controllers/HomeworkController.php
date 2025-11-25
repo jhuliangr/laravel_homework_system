@@ -78,13 +78,17 @@ class HomeWorkController extends Controller
     }
     public function evaluate(Request $request, string $id)
     {
-        $evaluation = Evaluation::create([
+        $teacher = auth()->user()->teacher;
+        $homework = Homework::find($id);
+        if (!$teacher || !$homework) {
+            abort(404);
+        }
+
+        Evaluation::create([
             'homework_id' => $id,
             'value' => $request->evaluation,
             'teacher_id' => auth()->user()->teacher->id
         ]);
-
-        $homework = $evaluation->homework;
         // Send an email to the student who uploaded the homework
         $homework->student->userData->notify(new HomeworkQualifiedNotification($homework));
 
@@ -149,12 +153,13 @@ class HomeWorkController extends Controller
 
     private function clearHomeworkSearchCache()
     {
-        $keys = cache()->get('homework_search_keys', []);
+        $CACHEKEY = 'homework_search_keys';
+        $keys = cache()->get($CACHEKEY, []);
 
         foreach ($keys as $key) {
             cache()->forget($key);
         }
 
-        cache()->forget('homework_search_keys');
+        cache()->forget($CACHEKEY);
     }
 }
