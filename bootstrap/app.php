@@ -12,7 +12,8 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'is_teacher' => \App\Http\Middleware\IsTeacher::class
+            'is_teacher' => \App\Http\Middleware\IsTeacher::class,
+            'ip.rate_limit' => \App\Http\Middleware\BlockIpRateLimit::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

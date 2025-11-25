@@ -8,9 +8,9 @@ Route::get('/dashboard', function () {
     $user = Auth::user();
     $teacher = $user->teacher;
     return view('userzone.dashboard', compact('teacher', 'user'));
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'verified', 'ip.rate_limit'])->name('dashboard');
 
-Route::middleware(['auth', 'is_teacher'])->group(function () {
+Route::middleware(['auth', 'is_teacher', 'ip.rate_limit'])->group(function () {
     Route::get('/profile', [App\Http\Controllers\Userzone\ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [App\Http\Controllers\Userzone\ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [App\Http\Controllers\Userzone\ProfileController::class, 'destroy'])->name('profile.destroy');
