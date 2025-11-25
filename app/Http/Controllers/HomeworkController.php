@@ -125,7 +125,7 @@ class HomeWorkController extends Controller
 
         // Get the homeworks from cache or make the query for retrieving the homeworks from database
         $homeworks = cache()->remember($cacheKey, now()->addHour(), function () use ($search) {
-            return Homework::with('student', 'course')
+            return Homework::with('student.userData', 'course')
                 ->when($search, function ($query, $search) {
                     return $query->where(function ($q) use ($search) {
                         // Search by homework title
