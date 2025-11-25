@@ -21,15 +21,13 @@
             @endif
         </div>
     </div>
-    <div class="text-center">
-        <p class="text-xl font-bold p-5">
+    <div>
+        <p class="text-xl font-bold p-5 text-center">
             {{ $homework->title }}
         </p>
-        <textarea
-            class="rounded-lg w-3/4 h-96 p-4 border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none overflow-y-auto"
-            readonly>
-          {{ $homework->body }}
-        </textarea>
-
+        <div
+            class="rounded-lg w-3/4 h-96 mx-auto p-4 border-2 bg-white border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none overflow-y-auto">
+            {!! $homework->body !!}
+        </div>
     </div>
 </x-site-layout>

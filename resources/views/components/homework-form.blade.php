@@ -27,7 +27,7 @@
 
                 <x-breeze.input-label for="body" value="Body" class="sr-only" />
                 <x-breeze.text-area id="body" name="body" type="" class="mt-1 block w-3/4"
-                    aria-placeholder="Beautiful body of your homework" />
+                    aria-placeholder="Beautiful body of your homework" rte />
 
                 @error('body')
                     <span class="text-red-500 text-sm">{{ $message }}</span>
