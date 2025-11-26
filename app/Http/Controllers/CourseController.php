@@ -13,7 +13,9 @@ class CourseController extends Controller
     {
         $user = auth()->user();
         // if the middleware says it's a teacher bring the courses this teacher imparts, otherwise bring all the courses
-        $courses = $request->is_teacher ? $request->user()->teacher->courses()->paginate(5) : Course::paginate(5);
+        $courses = $request->is_teacher ?
+            $request->user()->teacher->courses()->select('id', 'start_date', 'module_name')->paginate(5) :
+            Course::select('id', 'start_date', 'module_name')->paginate(5);
 
         return view('course.index', compact('courses', 'user'));
     }
@@ -42,12 +44,12 @@ class CourseController extends Controller
             'teacher_id' => $user->teacher->id,
         ]);
 
-        return redirect('/course');
+        return redirect(route('course.index'));
     }
 
     public function show(Request $request, string $id)
     {
-        $course = Course::find($id);
+        $course = Course::select('id', 'module_name', 'start_date', 'teacher_id')->find($id);
         $user = auth()->user();
         // if the authenticated user is the owner of the course, it's allowed to edit it, otherwise no 
         $edit = $request->is_teacher && $course->teacher_id === $user->teacher->id;
@@ -63,7 +65,7 @@ class CourseController extends Controller
     public function update(Request $request, string $id)
     {
         $user = auth()->user();
-        $course = Course::find($id);
+        $course = Course::select('id', 'module_name', 'start_date', 'teacher_id')->find($id);
 
         // If the authenticated user is not a teacher and if it is, is not the owner of the course, will receive 403 error
         if (!($request->is_teacher && $course->teacher_id === $user->teacher->id)) {
@@ -85,7 +87,7 @@ class CourseController extends Controller
 
     public function destroy(Request $request, string $id)
     {
-        $course = Course::findOrFail($id);
+        $course = Course::findOrFail($id)->select('teacher_id');
         $user = auth()->user();
 
         // If the authenticated user is not a teacher and if it is, is not the owner of the course, will receive 403 error
@@ -105,7 +107,7 @@ class CourseController extends Controller
     {
 
         $user = auth()->user();
-        $courses = $user->courses()->paginate(5);
+        $courses = $user->courses()->select('user:id', 'start_date', 'module_name')->paginate(5);
 
         return view('course.index', compact('courses', 'user'));
     }
@@ -116,7 +118,7 @@ class CourseController extends Controller
         $user = auth()->user();
 
         // Get the authenticated user enrolled courses ids for excluding them from the courses the user can enroll in
-        $excluded_course_ids = $user->courses->pluck('id');
+        $excluded_course_ids = $user->courses->select('id')->pluck('id');
 
         // If the middleware says the authenticated user is a teacher then mix the ids of the actually enrolled courses with the courses this teacher imparts
         // because a teacher can't teach to himself. At least is not the most common case.
@@ -125,7 +127,7 @@ class CourseController extends Controller
         }
 
         // retrieve from database the courses excluding the unnecesary ones
-        $courses = Course::whereNotIn('id', $excluded_course_ids)->paginate(5);
+        $courses = Course::whereNotIn('id', $excluded_course_ids)->select('id', 'module_name', 'start_date', 'teacher_id')->paginate(5);
 
         return view('course.pick', compact('courses'));
     }
@@ -135,10 +137,8 @@ class CourseController extends Controller
     {
         $user = auth()->user();
 
-        User::findOrFail($user->id);
-
         // Find course by it's id and if dones't find it, to throw a 404 error
-        Course::findOrFail($course_id);
+        Course::findOrFail($course_id)->select('id');
 
         CourseStudent::create([
             'user_id' => $user->id,
