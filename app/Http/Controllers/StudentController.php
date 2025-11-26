@@ -13,9 +13,12 @@ class StudentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(string $courseId)
+    public function index(Request $request, string $courseId)
     {
-        $courseStudents = Course::where("id", $courseId)->first()->students()->paginate(5);
+        if (!$request->is_teacher) {
+            abort(404);
+        }
+        $courseStudents = Course::where("id", $courseId)->first()->students()->select('user:id', 'name', 'email')->paginate(5);
         return view("student.index", compact("courseStudents", "courseId"));
     }
 
@@ -38,15 +41,18 @@ class StudentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $courseId, string $id)
+    public function show(Request $request, string $courseId, string $id)
     {
-        $student = User::find($id);
+        if (!$request->is_teacher) {
+            abort(404);
+        }
+        $student = User::select('name', 'email')->find($id);
 
         $courseStudentId = CourseStudent::where("course_id", $courseId)->where("user_id", $id)->first()->id;
         if (!$courseStudentId) {
             abort(404);
         }
-        $homeworksUploadedInCourse = Homework::where("course_student_id", $courseStudentId)->with('evaluations')
+        $homeworksUploadedInCourse = Homework::where("course_student_id", $courseStudentId)->with('evaluations:value', 'student:userData:name')->select('id', 'title')
             ->paginate(5);
 
         return view("student.show", compact("student", "homeworksUploadedInCourse", "courseId"));
