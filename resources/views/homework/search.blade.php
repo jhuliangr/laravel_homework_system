@@ -2,7 +2,7 @@
     <h1 class="mb-4 font-medium text-xl text-center">Búsqueda de Tareas</h1>
 
     <form action="{{ route('homework.search') }}" method="GET" class="flex items-center justify-between gap-5 px-5">
-        <x-back-button />
+        @include('components.back-button', ['route' => 'dashboard'])
         <x-breeze.text-input type="text" name="search" class="w-full"
             placeholder="Search by title, username, email or course name..." value="{{ $search }}" />
         <x-breeze.primary-button type="submit" class="btn btn-primary w-100">Find</x-breeze.primary-button>
