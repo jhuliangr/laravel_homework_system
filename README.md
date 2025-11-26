@@ -66,5 +66,10 @@ and evaluate them.
     ```terminal
       php artisan migrate:fresh --seed
     ```
+
+-   ## Run the Node code for showing site on dev mode 
+    ```terminal
+      npm run dev
+    ```
 -   ## You're ready to go!! :D
 
