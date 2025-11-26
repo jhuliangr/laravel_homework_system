@@ -7,6 +7,7 @@ use App\Models\Evaluation;
 use App\Models\Homework;
 use App\Notifications\HomeworkQualifiedNotification;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class HomeWorkController extends Controller
 {
@@ -15,7 +16,7 @@ class HomeWorkController extends Controller
         $user = auth()->user();
 
         // Get student data for authenticated user from the many to many relation with course
-        $courseStudent = CourseStudent::where('user_id', $user->id)
+        $courseStudent = CourseStudent::select('id')->where('user_id', $user->id)
             ->where('course_id', $courseId)
             ->first();
 
@@ -31,7 +32,7 @@ class HomeWorkController extends Controller
 
             return view('homework.index', compact('homeworks', 'courseId', 'withStudentName'));
         }
-        $homeworks = Homework::where('course_student_id', $courseStudent->id)->with('student', 'evaluations')->paginate(5);
+        $homeworks = Homework::select('id', 'title')->where('course_student_id', $courseStudent->id)->with('student:userData:name', 'evaluations:value')->paginate(5);
 
         return view('homework.index', compact('homeworks', 'courseId'));
     }
@@ -39,7 +40,7 @@ class HomeWorkController extends Controller
     public function show(Request $request, string $id)
     {
         $highestScore = "";
-        $homework = Homework::find($id);
+        $homework = Homework::select('id', 'title', 'body', 'course_student_id')->find($id);
         if (!$homework->evaluations->isEmpty()) {
             $highestScore = $homework->evaluations->max('value');
         }
@@ -78,33 +79,77 @@ class HomeWorkController extends Controller
     }
     public function evaluate(Request $request, string $id)
     {
+        if (!$request->is_teacher) {
+            return abort(403);
+        }
         $teacher = auth()->user()->teacher;
-        $homework = Homework::find($id);
+        $homework = Homework::select('id', 'course_student_id')->find($id);
+        $userData = $homework->student->userData;
+
+        // if the teacher is also the student he can't evaluate himself
+        if ($teacher->data->id == $userData->id) {
+            return abort(403);
+        }
+
         if (!$teacher || !$homework) {
             abort(404);
         }
 
+        $validated = $request->validate([
+            'evaluation' => [
+                'required',
+                'integer',
+                Rule::in([1, 2, 3, 4, 5])
+            ],
+        ]);
+
         Evaluation::create([
             'homework_id' => $id,
-            'value' => $request->evaluation,
+            'value' => $validated['evaluation'],
             'teacher_id' => auth()->user()->teacher->id
         ]);
+
         // Send an email to the student who uploaded the homework
-        $homework->student->userData->notify(new HomeworkQualifiedNotification($homework));
+        $userData->notify(new HomeworkQualifiedNotification($homework));
 
         return redirect(route('homework.show', $id));
     }
     public function reEvaluate(Request $request, string $id)
     {
+        if (!$request->is_teacher) {
+            return abort(403);
+        }
+
+        $teacher = auth()->user()->teacher;
+
         $evaluation = Evaluation::where('homework_id', $id)->first();
+        if (!$evaluation) {
+            abort(404);
+        }
+
+        $homework = Homework::select('id', 'course_student_id')->find($id);
+        $userData = $homework->student->userData;
+
+        // if the teacher is also the student he can't evaluate himself
+        if ($teacher->data->id == $userData->id) {
+            return abort(403);
+        }
+
+        $validated = $request->validate([
+            'evaluation' => [
+                'required',
+                'integer',
+                Rule::in([1, 2, 3, 4, 5])
+            ],
+        ]);
         $evaluation->update([
-            'value' => $request->evaluation,
+            'value' => $validated['evaluation'],
             'teacher_id' => auth()->user()->teacher->id
         ]);
 
         $homework = $evaluation->homework;
         // Send an email to the student who uploaded the homework
-        $homework->student->userData->notify(new HomeworkQualifiedNotification($homework));
+        $userData->notify(new HomeworkQualifiedNotification($homework));
 
         return redirect(route('homework.show', $id));
     }
@@ -112,6 +157,10 @@ class HomeWorkController extends Controller
 
     public function search(Request $request)
     {
+        if (!$request->is_teacher) {
+            return abort(403);
+        }
+
         $search = $request->input('search');
 
         // Create unique key for the page and search input value
