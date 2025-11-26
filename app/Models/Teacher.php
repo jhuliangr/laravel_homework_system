@@ -17,7 +17,7 @@ class Teacher extends Model
     
     public function data()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function evaluations() 
