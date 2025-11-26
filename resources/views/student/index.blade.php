@@ -1,6 +1,6 @@
 <x-site-layout>
     <div class="w-full flex items-center justify-between p-3">
-        @include('components.back-button', ['route' => 'course.show', 'param1' => $courseId])
+        <x-back-button />
     </div>
     @if ($courseStudents->isEmpty())
         <div class="text-center pt-5 font-bold rounded-full">

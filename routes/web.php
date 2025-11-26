@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [\App\Http\Controllers\WelcomeController::class, 'index'])->name('home');
+Route::get('/back', [App\Http\Controllers\BackController::class, 'back'])->name('back.clean');
 
 Route::get('/dashboard', function () {
     $user = Auth::user();

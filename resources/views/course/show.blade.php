@@ -1,6 +1,6 @@
 <x-site-layout>
     <div class="w-full flex items-center justify-between p-3 mb-5">
-        @include('components.back-button')
+        <x-back-button />
         @if ($edit)
             @include('components.course-form')
         @endif

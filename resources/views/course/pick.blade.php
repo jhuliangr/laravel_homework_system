@@ -1,6 +1,6 @@
 <x-site-layout>
     <div class="bg-gray-200 w-full flex items-center justify-between rounded-xl p-3">
-        @include('components.back-button', ['route' => 'dashboard'])
+        <x-back-button />
         <h2 class="font-bold px-5 text-xl">Select the courses you want to enroll in</h2>
         <div></div>
     </div>
