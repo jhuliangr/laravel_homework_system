@@ -16,6 +16,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'ip.rate_limit' => \App\Http\Middleware\BlockIpRateLimit::class,
         ]);
     })
-    ->withExceptions(function (Exceptions $exceptions): void {
-        //
+    ->withExceptions(function (Exceptions $exceptions) {
+        \Spatie\LaravelFlare\Facades\Flare::handles($exceptions);
     })->create();
