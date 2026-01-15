@@ -61,8 +61,9 @@
     <div class="max-w-screen px-10 py-20 flex-1 pt-28">
         {{ $slot }}
     </div>
-    <footer class="bg-teal-200 w-[95vw] p-3 text-center rounded-t-full mx-[2.5vw]">
-        Homework @ All rights reserved
+    <footer class="bg-teal-200 w-[95vw] p-3 text-center rounded-t-full mx-[2.5vw] flex items-center justify-center gap-3">
+        Homework @ All rights reserved 
+        <x-bitcoin-price/>
     </footer>
 
     <script>

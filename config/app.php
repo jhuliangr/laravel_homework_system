@@ -122,5 +122,8 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
+    'external_apis' => [
+        'api_ninja' => env('API_NINJA_KEY'),
+    ]
 
 ];
