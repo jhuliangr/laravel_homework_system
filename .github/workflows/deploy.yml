@@ -1,4 +1,4 @@
-name: Deploy to VPS
+name: Deploy Laravel to VPS
 
 on:
   push:
@@ -17,8 +17,27 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
+            set -e
+
             cd /var/www/laravel_homework_system
-            composer install
-            yes
-            php artisan migrate
+
+            echo "Pulling latest changes"
+            git pull origin main
+
+            echo "Installing PHP dependencies"
+            composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+
+            echo "Installing JS dependencies"
+            npm install
+
+            echo "Building frontend"
             npm run build
+
+            echo "Clearing caches"
+            php artisan down
+            php artisan migrate --force
+            php artisan optimize:clear
+            php artisan optimize
+
+            echo "App is live"
+            php artisan up
