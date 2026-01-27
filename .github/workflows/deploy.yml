@@ -28,6 +28,7 @@ jobs:
             git pull origin main
 
             echo "Setting up project"
+            export COMPOSER_ALLOW_SUPERUSER=1
             composer setup
 
             echo "deploy finished"
