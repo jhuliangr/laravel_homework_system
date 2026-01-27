@@ -25,7 +25,7 @@ jobs:
             git pull origin main
 
             echo "Installing PHP dependencies"
-            composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+            composer install --no-interaction --prefer-dist --optimize-autoloader
 
             echo "Installing JS dependencies"
             npm install
