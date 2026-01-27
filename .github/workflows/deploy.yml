@@ -24,8 +24,8 @@ jobs:
             echo "Pulling latest changes"
             git pull origin main
 
-            echo "Installing PHP dependencies"
-            composer install --no-interaction --prefer-dist --optimize-autoloader
+            echo "Installing PHP dependencies (DEV)"
+            composer install --no-interaction --prefer-dist
 
             echo "Installing JS dependencies"
             npm install
@@ -33,11 +33,10 @@ jobs:
             echo "Building frontend"
             npm run build
 
-            echo "Clearing caches"
-            php artisan down
+            echo "Running migrations"
             php artisan migrate --force
-            php artisan optimize:clear
-            php artisan optimize
 
-            echo "App is live"
-            php artisan up
+            echo "Clearing caches"
+            php artisan optimize:clear
+
+            echo "deploy finished"
