@@ -28,10 +28,10 @@ jobs:
             composer install --no-interaction --prefer-dist
 
             echo "Installing JS dependencies"
-            npm install
+            pnpm install
 
             echo "Building frontend"
-            npm run build
+            pnpm run build
 
             echo "Running migrations"
             php artisan migrate --force
