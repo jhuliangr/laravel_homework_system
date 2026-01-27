@@ -19,6 +19,9 @@ jobs:
           script: |
             set -e
 
+            source ~/.bashrc || true
+            source ~/.profile || true
+            
             cd /var/www/laravel_homework_system
 
             echo "Pulling latest changes"
@@ -26,8 +29,6 @@ jobs:
 
             echo "Installing PHP dependencies (DEV)"
             composer install --no-interaction --prefer-dist
-
-            source ~/.bashrc || true
 
             echo "Installing JS dependencies"
             pnpm install
