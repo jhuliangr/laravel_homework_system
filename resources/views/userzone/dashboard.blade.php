@@ -11,6 +11,10 @@
                         student!
                     @endif
                 </div>
+                @if ($premium > 0)
+                    <div class="rounded-full bg-lime-400 shadow-lg px-5 py-2 mt-5">You are
+                        {{ 'premium level: ' . $premium }}</div>
+                @endif
                 <div class="mt-10">
                 </div>
                 <a href="{{ route('course.pick') }}">

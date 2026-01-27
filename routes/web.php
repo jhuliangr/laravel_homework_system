@@ -8,10 +8,15 @@ Route::get('/back', [App\Http\Controllers\BackController::class, 'back'])->name(
 Route::get('/dashboard', function () {
     $user = Auth::user();
     $teacher = $user->teacher;
-    return view('userzone.dashboard', compact('teacher', 'user'));
+    $purchases = $user->purchases()->orderBy('created_at', 'desc')->get();
+    $premium = $purchases->count();
+    return view('userzone.dashboard', compact('teacher', 'user', 'premium'));
 })->middleware(['auth', 'verified', 'ip.rate_limit'])->name('dashboard');
 
 Route::middleware(['auth', 'is_teacher', 'ip.rate_limit'])->group(function () {
+
+    Route::get('user/premium', [\App\Http\Controllers\PremiumUserController::class, 'preparePayment'])->name('user.get_premium');
+
     Route::get('/profile', [App\Http\Controllers\Userzone\ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [App\Http\Controllers\Userzone\ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [App\Http\Controllers\Userzone\ProfileController::class, 'destroy'])->name('profile.destroy');

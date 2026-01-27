@@ -1,9 +1,16 @@
 <x-site-layout>
     <x-app-layout>
         <x-slot name="header">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Profile
-            </h2>
+            <div class="flex items-center justify-between">
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                    Profile
+                </h2>
+                <form action="{{ route('user.get_premium') }}" class="inline">
+                    <button type="submit" class="bg-teal-700 text-white px-3 py-1 rounded">
+                        Increase premium level for 2 Euros :D
+                    </button>
+                </form>
+            </div>
         </x-slot>
 
         <div class="py-12">
