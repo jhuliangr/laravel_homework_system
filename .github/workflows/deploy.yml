@@ -21,25 +21,13 @@ jobs:
 
             source ~/.bashrc || true
             source ~/.profile || true
-            
+
             cd /var/www/laravel_homework_system
 
             echo "Pulling latest changes"
             git pull origin main
 
-            echo "Installing PHP dependencies (DEV)"
-            composer install --no-interaction --prefer-dist
-
-            echo "Installing JS dependencies"
-            pnpm install
-
-            echo "Building frontend"
-            pnpm run build
-
-            echo "Running migrations"
-            php artisan migrate --force
-
-            echo "Clearing caches"
-            php artisan optimize:clear
+            echo "Setting up project"
+            composer setup
 
             echo "deploy finished"
