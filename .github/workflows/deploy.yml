@@ -27,6 +27,8 @@ jobs:
             echo "Installing PHP dependencies (DEV)"
             composer install
 
+            echo "Adding Node to PATH"
+            export PATH="$HOME/.nvm/versions/node/v23.9.0/bin:$PATH"
             
             echo "Installing JS dependencies"
             /root/.nvm/versions/node/v23.9.0/bin/pnpm install
