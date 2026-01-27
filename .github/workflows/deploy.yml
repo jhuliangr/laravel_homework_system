@@ -19,5 +19,6 @@ jobs:
           script: |
             cd /var/www/laravel_homework_system
             composer install
+            yes
             php artisan migrate
-            pnpm run build
+            npm run build
