@@ -27,6 +27,8 @@ jobs:
             echo "Installing PHP dependencies (DEV)"
             composer install --no-interaction --prefer-dist
 
+            source ~/.bashrc || true
+
             echo "Installing JS dependencies"
             pnpm install
 
