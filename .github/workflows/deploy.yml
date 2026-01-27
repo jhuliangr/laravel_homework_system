@@ -19,16 +19,25 @@ jobs:
           script: |
             set -e
 
-            source ~/.bashrc || true
-            source ~/.profile || true
-
             cd /var/www/laravel_homework_system
 
             echo "Pulling latest changes"
             git pull origin main
 
-            echo "Setting up project"
-            export COMPOSER_ALLOW_SUPERUSER=1
-            composer setup
+            echo "Installing PHP dependencies (DEV)"
+            composer install
+
+            
+            echo "Installing JS dependencies"
+            /root/.nvm/versions/node/v23.9.0/bin/pnpm install
+
+            echo "Building frontend"
+            /root/.nvm/versions/node/v23.9.0/bin/pnpm run build
+
+            echo "Running migrations"
+            php artisan migrate --force
+
+            echo "Clearing caches"
+            php artisan optimize:clear
 
             echo "deploy finished"
