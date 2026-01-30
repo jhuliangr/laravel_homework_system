@@ -41,6 +41,13 @@ new class extends Component {
 };
 ?>
 
+@placeholder
+    <div class="font-medium flex items-center">
+        Bitcoin price:
+        <div class="animate-spin size-5 border-teal-800"></div>
+    </div>
+@endplaceholder
+
 <div class="font-medium flex items-center">
     @if ($loading)
         <div class="animate-pulse flex items-center">
