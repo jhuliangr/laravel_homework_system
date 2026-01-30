@@ -18,10 +18,22 @@ class HomeworkPublicApiController extends Controller
      */
     public function index(Request $request, string $courseId): JsonResponse
     {
-        $user = auth()->user();
+        $user = request()->get('userId', '');
+        if (empty($user)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found'
+            ]);
+        }
+        if (empty($courseId)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Course not found'
+            ]);
+        }
 
         $courseStudent = CourseStudent::select('id')
-            ->where('user_id', $user->id)
+            ->where('user_id', $user)
             ->where('course_id', $courseId)
             ->first();
 
@@ -283,8 +295,7 @@ class HomeworkPublicApiController extends Controller
                 'message' => 'You are not allowed to search for homeworks'
             ], 403);
         }
-
-        $search = $request->input('search', '');
+        $search = $request->get('search', '');
 
         $page = $request->get('page', 1);
         $perPage = $request->get('per_page', 15);
@@ -300,14 +311,14 @@ class HomeworkPublicApiController extends Controller
                     return $query->where(function ($q) use ($search) {
                         $q->where('title', 'LIKE', "%{$search}%")
                             ->orWhereHas('student.userData', function ($userQuery) use ($search) {
-                            $userQuery->where('name', 'LIKE', "%{$search}%");
-                        })
+                                $userQuery->where('name', 'LIKE', "%{$search}%");
+                            })
                             ->orWhereHas('student', function ($userQuery) use ($search) {
-                            $userQuery->where('email', 'LIKE', "%{$search}%");
-                        })
+                                $userQuery->where('email', 'LIKE', "%{$search}%");
+                            })
                             ->orWhereHas('course', function ($courseQuery) use ($search) {
-                            $courseQuery->where('module_name', 'LIKE', "%{$search}%");
-                        });
+                                $courseQuery->where('module_name', 'LIKE', "%{$search}%");
+                            });
                     });
                 })
                 ->orderBy('created_at', 'desc')
