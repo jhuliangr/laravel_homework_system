@@ -19,9 +19,9 @@ class EvaluatedHomeworksChart extends LarapexChart
     int $total
   ) {
 
-    $homeworkPercentByStudents = (int) ((($total - $homeworksUploadedByTeachers) * 100) / $total);
-    $homeworkPercentByTeachers = (int) (($homeworksUploadedByTeachers * 100) / $total);
-    $homeworksEvaluatedPecent = (int) (($evaluatedHomeworks * 100) / $total);
+    $homeworkPercentByStudents = $total != 0 ? (int) ((($total - $homeworksUploadedByTeachers) * 100) / $total) : 0;
+    $homeworkPercentByTeachers = $total != 0 ? (int) (($homeworksUploadedByTeachers * 100) / $total) : 0;
+    $homeworksEvaluatedPecent = $total != 0 ? (int) (($evaluatedHomeworks * 100) / $total) : 0;
 
 
     return $this->chart->radialChart()

@@ -9,7 +9,7 @@ use App\Notifications\HomeworkQualifiedNotification;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
-class HomeWorkController extends Controller
+class HomeworkController extends Controller
 {
     public function index(Request $request, string $courseId)
     {
