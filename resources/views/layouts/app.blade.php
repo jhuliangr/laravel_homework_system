@@ -7,7 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'Laravel') }}</title>
-
+    @livewireStyles
 </head>
 
 <body class="font-sans">
@@ -22,10 +22,11 @@
                 </div>
             </header>
         @endisset
-        
+
         <!-- Page Content -->
         <main>
             {{ $slot }}
+            @livewireScripts
         </main>
     </div>
 </body>
