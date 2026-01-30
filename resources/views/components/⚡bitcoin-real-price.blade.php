@@ -8,7 +8,6 @@ new class extends Component {
     public $error = false;
 
     protected $listeners = ['refreshBitcoinPrice' => '$refresh'];
-
     public function mount()
     {
         $this->fetchPrice();
@@ -33,17 +32,11 @@ new class extends Component {
             $this->loading = false;
         }
     }
-
     private function fetchBitcoinPrice(string $url, string $key): float
     {
         $response = Http::withHeaders(['x-api-key' => $key])->get($url);
         $data = $response->json();
         return $data['price'] ?? 0;
-    }
-
-    public function render()
-    {
-        return view('livewire.bitcoin-price');
     }
 };
 ?>

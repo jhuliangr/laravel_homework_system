@@ -63,7 +63,7 @@
     </div>
     <footer class="bg-teal-200 w-[95vw] p-3 text-center rounded-t-full mx-[2.5vw] flex items-center justify-center gap-3">
         Homework @ All rights reserved 
-        <livewire:bitcoin-price />
+        <livewire:bitcoin-real-price lazy />
     </footer>
 
     <script>
