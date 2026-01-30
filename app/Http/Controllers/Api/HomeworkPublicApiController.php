@@ -71,7 +71,7 @@ class HomeworkPublicApiController extends Controller
         if (!$homework) {
             return response()->json([
                 'success' => false,
-                'message' => 'Tarea no encontrada'
+                'message' => 'Homework not found'
             ], 404);
         }
 
