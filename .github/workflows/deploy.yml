@@ -17,6 +17,11 @@ jobs:
           php-version: '8.3'
       - name: Install PHP dependencies
         run: composer install --no-progress --no-interaction
+      - name: Generate APP_KEY
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+          cp .env .env.testing
       - name: Run PHP Unit tests
         run: php artisan test
 
