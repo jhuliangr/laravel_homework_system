@@ -17,6 +17,19 @@ jobs:
           php-version: '8.3'
       - name: Install PHP dependencies
         run: composer install --no-progress --no-interaction
+      - name: Install Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 23
+      - name: Install Node dependencies
+        run: pnpm install
+      - name: Build frontend
+        run: pnpm run build
+      - name: Run migrations
+        run: php artisan migrate --force
+      - name: Clear caches
+        run: php artisan optimize:clear
+      
       - name: Generate APP_KEY
         run: |
           cp .env.example .env
